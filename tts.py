@@ -26,7 +26,7 @@ import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from lexicon_gen import parse_syllables
+from lexicon_gen import parse_syllables, CLUSTERS
 
 # ---------------------------------------------------------------- 映射表
 
@@ -135,7 +135,62 @@ SN = {
     'demo_gloss': 'a aa e ee i ii o oo u uu · p t th k kh ts s sh h m n l r j w',
 }
 
-PROFILES = {'fi': FI, 'id': ID, 'es': ES, 'fr': FR, 'sn': SN}
+# ---- ja 日语（旧方案，v2 遗留）：拼写按音节映射为片假名
+# 辅音行：{辅音: {a,e,i,o,u 的片假名}}（元音顺序固定 a e i o u）
+KANA_ROWS = {
+    '':   {'a': 'ア', 'e': 'エ', 'i': 'イ', 'o': 'オ', 'u': 'ウ'},
+    'p':  {'a': 'パ', 'e': 'ペ', 'i': 'ピ', 'o': 'ポ', 'u': 'プ'},
+    't':  {'a': 'タ', 'e': 'テ', 'i': 'ティ', 'o': 'ト', 'u': 'トゥ'},
+    'th': {'a': 'タ', 'e': 'テ', 'i': 'ティ', 'o': 'ト', 'u': 'トゥ'},
+    'k':  {'a': 'カ', 'e': 'ケ', 'i': 'キ', 'o': 'コ', 'u': 'ク'},
+    'kh': {'a': 'カ', 'e': 'ケ', 'i': 'キ', 'o': 'コ', 'u': 'ク'},
+    'ts': {'a': 'ツァ', 'e': 'ツェ', 'i': 'ツ', 'o': 'ツォ', 'u': 'ツ'},
+    's':  {'a': 'サ', 'e': 'セ', 'i': 'シ', 'o': 'ソ', 'u': 'ス'},
+    'sh': {'a': 'シャ', 'e': 'シェ', 'i': 'シ', 'o': 'ショ', 'u': 'シュ'},
+    'h':  {'a': 'ハ', 'e': 'ヘ', 'i': 'ヒ', 'o': 'ホ', 'u': 'フ'},
+    'm':  {'a': 'マ', 'e': 'メ', 'i': 'ミ', 'o': 'モ', 'u': 'ム'},
+    'n':  {'a': 'ナ', 'e': 'ネ', 'i': 'ニ', 'o': 'ノ', 'u': 'ヌ'},
+    'ng': {'a': 'ンア', 'e': 'ンエ', 'i': 'ンイ', 'o': 'ンオ', 'u': 'ンウ'},
+    'l':  {'a': 'ラ', 'e': 'レ', 'i': 'リ', 'o': 'ロ', 'u': 'ル'},
+    'r':  {'a': 'ラ', 'e': 'レ', 'i': 'リ', 'o': 'ロ', 'u': 'ル'},
+    'j':  {'a': 'ヤ', 'e': 'イェ', 'i': 'イ', 'o': 'ヨ', 'u': 'ユ'},
+    'w':  {'a': 'ワ', 'e': 'ウェ', 'i': 'ウィ', 'o': 'ウォ', 'u': 'ウ'},
+}
+KANA_APPEND = {'a': 'ア', 'e': 'エ', 'i': 'イ', 'o': 'オ', 'u': 'ウ'}
+KANA_CODA = {'n': 'ン', 'm': 'ン', 'k': 'ッ', 't': 'ッ', 'th': 'ッ', 's': 'ス', 'l': 'ル'}
+CLUSTER_HEAD = {'s': 'ス', 'k': 'ク', 'p': 'プ'}
+
+
+def syl_to_kana(onset, v, coda):
+    out = ''
+    if onset in CLUSTERS:                       # 词首辅音簇：垫一个 u 段
+        out += CLUSTER_HEAD[onset[0]]
+        onset = onset[1]
+    if v in ('a', 'e', 'i', 'o', 'u'):
+        out += KANA_ROWS[onset][v]
+    elif len(v) == 2 and v[0] == v[1]:          # 长元音 → 长音记号
+        out += KANA_ROWS[onset][v[0]] + 'ー'
+    else:                                       # 双元音 → 两段拼合
+        out += KANA_ROWS[onset][v[0]] + KANA_APPEND[v[1]]
+    if coda:
+        out += KANA_CODA[coda]
+    return out
+
+
+JA = {
+    'label': 'ja 日语',
+    'kind': '真实语言',
+    'voice': 'ja-JP-NanamiNeural',
+    'kana': True,
+    # v3 起不再用「、」逐词断句——那正是"不连贯"的根源：每个词都被当成列举项，
+    # 整句变成一唱一顿的清单腔。现在和其他声线一样只保留原句标点，让 TTS 自己连读。
+    'note': '拼写按音节映射为片假名（长元音→ー、词尾 k/t/th→促音ッ），按原句标点连读。'
+            '已知近似：kh/th 送气对立被日语归并，五元音+拍节奏。',
+    'demo': 'ア アー エ エー イ イー オ オー ウ ウー、パ タ ティ タ カ カ ツァ サ シャ ハ マ ナ ラ ラ ヤ ワ',
+    'demo_gloss': 'a aa e ee i ii o oo u uu · p t th k kh ts s sh h m n l r j w',
+}
+
+PROFILES = {'fi': FI, 'id': ID, 'es': ES, 'fr': FR, 'sn': SN, 'ja': JA}
 
 # ---------------------------------------------------------------- 语料
 
@@ -185,6 +240,10 @@ def map_word(word, prof):
             raise ValueError('无法解析词形: %s (部分 %s)' % (word, part))
         for si, (onset, v, coda) in enumerate(syls):
             last = (pi == len(parts) - 1) and (si == len(syls) - 1)
+            if prof.get('kana'):                    # ja：整音节出片假名
+                out.append(syl_to_kana(onset, v, coda))
+                first = False
+                continue
             o = prof['on'][onset]
             if onset == 's' and not first and prof.get('s_medial'):
                 o = prof['s_medial']
@@ -206,7 +265,7 @@ def phrase_to_target(text, prof):
     for tok in TOKEN_RE.findall(text):
         if tok[0].isalpha():
             if parts:
-                parts.append(' ')
+                parts.append(prof.get('join', ' '))
             parts.append(map_word(tok, prof))
         else:
             parts.append('...' if tok.startswith('…') else tok)
