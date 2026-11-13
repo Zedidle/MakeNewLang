@@ -102,6 +102,7 @@ CATS = [
         ("人", "haan"), ("名字", "nesha"), ("家", "het"), ("门", "ton"),
         ("路", "paath"), ("城", "kolse"), ("王", "khan"), ("神", "ilath"),
         ("敌", "kaath"), ("朋友", "melin"), ("礼物", "pema"),
+        ("陌路人", "eishaan"),
     ]),
     ("抽象", [
         ("语言", "shaat"), ("歌", "laal"), ("故事", "kataa"), ("梦", "hum"),
@@ -207,7 +208,9 @@ def main():
     here = os.path.dirname(os.path.abspath(__file__))
     all_words = [(g, w, cat) for cat, pairs in CATS for g, w in pairs]
 
-    assert len(all_words) == 200, '词根数量应为 200，实际 %d' % len(all_words)
+    # eishaan 是 eis（外）+ haan（人）的合成词，计入词表，不计入词根 assert。
+    all_roots = [w for g, w, c in all_words if w != 'eishaan']
+    assert len(all_roots) == 200, '词根数量应为 200，实际 %d' % len(all_roots)
 
     seen = {}
     errs = []
@@ -228,7 +231,7 @@ def main():
     lines = []
     lines.append('# Thelshaat 线语 · 词根表')
     lines.append('')
-    lines.append('> 共 **200 个词根** + **9 个功能词**。拼写即读音，重音永远在第一音节。')
+    lines.append('> 共 **200 个词根** + **1 个合成词** + **9 个功能词**。拼写即读音，重音永远在第一音节。')
     lines.append('> IPA 中词尾 /t/ 对应拼写 th（词尾清化，见 phonology.md R0）。')
     lines.append('')
     for cat, pairs in CATS:
@@ -251,7 +254,7 @@ def main():
     out = os.path.join(here, 'lexicon.md')
     with io.open(out, 'w', encoding='utf-8') as f:
         f.write('\n'.join(lines))
-    print('OK: 200 词根全部通过音系校验，无重复。已生成 lexicon.md')
+    print('OK: 200 词根 + 1 合成词全部通过音系校验，无重复。已生成 lexicon.md')
 
 
 if __name__ == '__main__':

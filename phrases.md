@@ -17,9 +17,11 @@
 | 11 | 哀伤 | Nel-in haat thet-tel… | /ˈnɛ.lin ˈhaːt ˈtʰɛt.tɛl/ | 我的·心·落·过去 | 低沉；末音节拖到几乎无声，尾带气音 |
 | 12 | 追问 | Thi na jom-tel ke? | /tʰi na ˈjom.tɛl kɛ/ | 你·那里·去·过去·疑问 | 试探；谨慎，jom-tel 略慢 |
 | 13 | 谚语 | Thel haal, paath haal. | /tʰɛl haːl paːt haːl/ | 线·长 路·长 | 吟诵；缓慢，两句同调，haal 拖满长元音 |
+| 14 | 问候 | Nu shil, eishaan. | /nu ˈʃil ˈei.haːn/ | 现在·好·陌路人（外·人） | 平静中带距离感；shil 短促轻点，eishaan 略慢，末音节轻降 |
 
 ## 备注
 
 - 第 13 句是语言的世界观句："线有多长，路就有多长"——可用作 Thelshaat 母语者的开场白。
+- 第 14 句的 **eishaan**（陌路人）是 `eis`（外）+ `haan`（人）的合成词，与 thelshaat（thel+shaat）同一构词法；"Nu shil"（现在·好）是与 "Eli shil"（早晨·好）同构的通用问候式。
 - 对长辈说话时，任何句子末尾加 **-sha**（R3 尊称规则）即可切换敬语语域，如 `Eli shil-sha.`
 - 想要虫群方言版（R4），把词首 n 读成 ng、元音全部鼻化即可：`Nel saal mok kum` → [ŋẽl sãːl mõk kũm]。

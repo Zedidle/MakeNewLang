@@ -208,6 +208,7 @@ PHRASES = [
     (11, "哀伤", "Nel-in haat thet-tel…", {'rate': '-20%', 'pitch': '-15Hz', 'volume': '-8%'}),
     (12, "追问", "Thi na jom-tel ke?", {'rate': '-5%', 'pitch': '+0Hz', 'volume': '+0%'}),
     (13, "谚语", "Thel haal, paath haal.", {'rate': '-30%', 'pitch': '-10Hz', 'volume': '+0%'}),
+    (14, "问候", "Nu shil, eishaan.", {'rate': '-8%', 'pitch': '+0Hz', 'volume': '-5%'}),
 ]
 
 META = {
@@ -224,6 +225,7 @@ META = {
     11: ("Nel-in haat thet-tel…", "/ˈnɛ.lin ˈhaːt ˈtʰɛt.tɛl/", "我的·心·落·过去"),
     12: ("Thi na jom-tel ke?", "/tʰi na ˈjom.tɛl kɛ/", "你·那里·去·过去·疑问"),
     13: ("Thel haal, paath haal.", "/tʰɛl haːl paːt haːl/", "线·长 路·长"),
+    14: ("Nu shil, eishaan.", "/nu ˈʃil ˈei.haːn/", "现在·好·陌路人（外·人）"),
 }
 
 # ---------------------------------------------------------------- 转换
@@ -366,10 +368,10 @@ def build_html(sets):
   .summary b{color:var(--fg);font-weight:500}
 </style></head><body><div class="wrap">
 <h1>Thelshaat 线语 · 多声线神经语音</h1>
-<p class="sub">/ˈtʰɛl.ʃaːt/ · 13 句例句 + 音素示范 · 每套声线按"与音系设计的同构度"挑选</p>
+<p class="sub">/ˈtʰɛl.ʃaːt/ · __NPHRASES__ 句例句 + 音素示范 · 每套声线按"与音系设计的同构度"挑选</p>
 <div class="tabs">__TABS__</div>
 __PANELS__
-<div class="summary"><h2>五套声线速查</h2><ul>__NOTES__</ul>
+<div class="summary"><h2>六套声线速查</h2><ul>__NOTES__</ul>
 <p class="sub" style="margin:10px 0 0">任何真实语言的 TTS 都会带上那门语言的口音——这是用 TTS 造语的固有代价。
 精灵语一项没有真实 TTS，是用威尔士语（托尔金设计辛达林的直接底稿）模拟。</p></div>
 </div>
@@ -381,7 +383,8 @@ function pick(k){
 }
 </script></body></html>""".replace('__TABS__', ''.join(buttons)) \
         .replace('__PANELS__', ''.join(panels)) \
-        .replace('__NOTES__', ''.join(notes))
+        .replace('__NOTES__', ''.join(notes)) \
+        .replace('__NPHRASES__', str(len(PHRASES)))
 
 
 async def build(key, here, rebuild=False):
